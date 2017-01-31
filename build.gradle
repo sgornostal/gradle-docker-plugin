@@ -2,12 +2,66 @@ group 'org.sgornostal'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'groovy'
+apply plugin: 'maven-publish'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
     compile gradleApi()
     compile localGroovy()
+    compile 'com.google.guava:guava:21.0'
+    compile 'com.github.docker-java:docker-java:3.0.7'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.6.9'
 }
+
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+
+            pom.withXml {
+                asNode().with {
+
+                    appendNode('name', 'gradle-docker-plugin')
+                    appendNode('description', 'Gradle plugin to build Docker images')
+                    appendNode('url', 'https://github.com/Transmode/gradle-docker')
+                    appendNode('inceptionYear', '2013')
+
+                    appendNode('licenses').appendNode('license').with {
+                        appendNode('name', 'The Apache Software License, Version 2.0')
+                        appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
+                        appendNode('distribution', 'repo')
+                    }
+
+                    appendNode('developers').appendNode('developer').with {
+                        appendNode('id', 'mattgruter')
+                        appendNode('name', 'Matthias Grüter')
+                        appendNode('email', 'matthias.gruter@transmode.com')
+                        appendNode('roles').appendNode('role', 'Developer')
+
+                    }
+
+                    appendNode('issueManagement').with {
+                        appendNode('system', 'github')
+                        appendNode('url', 'https://github.com/Transmode/gradle-docker/issues')
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+
