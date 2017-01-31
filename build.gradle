@@ -41,8 +41,8 @@ bintray {
     publications = ['maven']
     publish = true
     pkg {
-        repo = 'gradle-plugins'
-        name = 'com.bmuschko:gradle-docker-plugin'
+        repo = 'gradle-plugins-repo'
+        name = 'org.sgornostal:gradle-docker-plugin'
         desc = 'Gradle plugin for managing Docker images and containers.'
         websiteUrl = 'https://github.com/sgornostal/gradle-docker-plugin'
         issueTrackerUrl = 'https://github.com/sgornostal/gradle-docker-plugin/issues'
