@@ -3,7 +3,7 @@
 This plugin for [Gradle](http://www.gradle.org/) adds the capability to build, run and push [Docker](http://docker.io/) images.
 Plugin uses Docker remote API that are handled by [Docker Java library](https://github.com/docker-java/docker-java)
 
-[ ![Download](https://api.bintray.com/packages/sgornostal/gradle-plugins-repo/org.sgornostal:gradle-docker-plugin/images/download.svg) ](https://bintray.com/jfrog/jfrog-jars/gradle-bintray-plugin/_latestVersion)
+[![Download](https://api.bintray.com/packages/sgornostal/gradle-plugins-repo/org.sgornostal%3Agradle-docker-plugin/images/download.svg) ](https://bintray.com/sgornostal/gradle-plugins-repo/org.sgornostal%3Agradle-docker-plugin/_latestVersion)
 [![Build Status](https://travis-ci.org/sgornostal/gradle-docker-plugin.svg?branch=master)](https://travis-ci.org/sgornostal/gradle-docker-plugin)
 
 ## Usage
