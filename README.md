@@ -17,7 +17,7 @@ buildscript {
        }
     }
     dependencies {
-        classpath 'org.sgornostal:gradle-docker-plugin:1.0'
+        classpath 'org.sgornostal:gradle-docker-plugin:1.1'
     }
 }
 
@@ -140,4 +140,8 @@ In the example above, tasks `pushDockerToMyRegistry` and `pushDockerToHub` will 
 - `buildDocker` - build docker image
 - `runDocker` - create and run docker container
 - `stopDocker` - stop docker container
-- `pushDockerTo%s` - push docker to registry, where `%s` is capitalized name of a registry from `dockerRegistries` configuration 
+- `pushDockerTo%s` - push docker to registry, where `%s` is capitalized name of a registry from `dockerRegistries` configuration
+ 
+### More samples
+https://github.com/sgornostal/gradle-docker-plugin-samples
+

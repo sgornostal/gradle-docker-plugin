@@ -27,8 +27,7 @@ class BuildDockerImage extends AbstractDockerTask {
     @Override
     void execWith(DockerClient client) {
 
-        def tags = getTags() ?: [project.version]
-        def firstTag = tags[0]
+        def tags = getTags() ?: ['latest']
 
         def existingImages = client.listImagesCmd()
                 .withImageNameFilter(image)
@@ -36,7 +35,7 @@ class BuildDockerImage extends AbstractDockerTask {
 
         def build = client.buildImageCmd(getBuildDir())
                 .withDockerfile(getDockerFile())
-                .withTag(image + ":" + firstTag)
+                .withTag(image + ":" + tag)
 
         if (getBuildArgs()) {
             getBuildArgs().each {
@@ -54,12 +53,12 @@ class BuildDockerImage extends AbstractDockerTask {
             }
         }
 
-        logger.info('Execute build image {} with args {} and version tag = {}', image, getBuildArgs(), firstTag)
+        logger.info('Execute build image {} with args {} and tag {}', image, getBuildArgs(), tag)
 
         def imageId = build.exec(buildCallback).awaitImageId()
 
         if (tags.size() > 1) {
-            tags.findAll { it != firstTag }.each {
+            tags.findAll { it != tag }.each {
                 logger.info('Tagging image {} with versions {}', image, it)
                 client.tagImageCmd(imageId, image, it as String)
                         .withForce(true).exec()

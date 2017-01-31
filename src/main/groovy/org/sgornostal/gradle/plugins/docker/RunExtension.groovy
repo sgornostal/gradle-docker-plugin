@@ -27,7 +27,7 @@ class RunExtension {
     }
 
     void env(String... args) {
-        this.env = ImmutableSet.copyOf(args)
+        this.env = ImmutableList.copyOf(args)
     }
 
 }

@@ -28,6 +28,14 @@ abstract class AbstractDockerTask extends DefaultTask {
         getImageName() ?: project.name
     }
 
+    protected String getTag() {
+        docker.getTags() ? docker.getTags()[0] : 'latest'
+    }
+
+    protected String getFullImageName() {
+        getImage() + ":" + getTag()
+    }
+
     @TaskAction
     void executeTask() {
 

@@ -5,6 +5,7 @@ import com.github.dockerjava.api.exception.NotModifiedException
 import com.github.dockerjava.api.model.Bind
 import com.github.dockerjava.api.model.ExposedPort
 import com.github.dockerjava.api.model.Frame
+import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.core.command.AttachContainerResultCallback
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
@@ -47,7 +48,7 @@ class RunDockerContainer extends AbstractDockerTask {
             client.removeContainerCmd(it.id).exec()
         }
 
-        def containerBuilder = client.createContainerCmd(image)
+        def containerBuilder = client.createContainerCmd(fullImageName)
                 .withName(getContainerName())
                 .withLabels(['name': getContainerName()])
 
@@ -55,7 +56,7 @@ class RunDockerContainer extends AbstractDockerTask {
             containerBuilder.withBinds(getVolumes().collect { Bind.parse(it) })
         }
         if (getPorts()) {
-            containerBuilder.withExposedPorts(getPorts().collect { ExposedPort.parse(it) })
+            containerBuilder.withPortBindings(getPorts().collect { PortBinding.parse(it) })
         }
         if (getEnv()) {
             containerBuilder.withEnv(getEnv())
@@ -70,7 +71,8 @@ class RunDockerContainer extends AbstractDockerTask {
 
         client.startContainerCmd(container.id).exec()
 
-        if (attach) {
+
+        if (getAttach()) {
             def callback = new AttachContainerResultCallback() {
 
                 @Override
