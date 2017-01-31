@@ -22,7 +22,7 @@ class PluginExtension {
     Set<String> tags
 
     final CopySpec copySpec
-    Set<Task> dependencies
+    Set<Task> dependencies = []
 
     PluginExtension(Project project) {
         this.project = project
@@ -42,11 +42,8 @@ class PluginExtension {
     }
 
     void dependsOn(String... args) {
-        def tasks = []
         if (args) {
-            args.each { tasks << project.tasks.findByName(it) }
-        } else {
-            this.dependencies = ImmutableSet.of()
+            args.each { dependencies << project.tasks.findByName(it) }
         }
     }
 

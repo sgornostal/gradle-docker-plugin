@@ -1,8 +1,20 @@
 group 'org.sgornostal'
-version '1.0-SNAPSHOT'
+version '1.0'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+    }
+}
+
 
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 repositories {
     mavenLocal()
@@ -16,13 +28,32 @@ dependencies {
     compile 'com.github.docker-java:docker-java:3.0.7'
 
     testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.6.9'
 }
-
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
+}
+
+bintray {
+    user = resolveProperty('bintrayUser')
+    key = resolveProperty('bintrayKey')
+    publications = ['maven']
+    publish = true
+    pkg {
+        repo = 'gradle-plugins'
+        name = 'com.bmuschko:gradle-docker-plugin'
+        desc = 'Gradle plugin for managing Docker images and containers.'
+        websiteUrl = 'https://github.com/sgornostal/gradle-docker-plugin'
+        issueTrackerUrl = 'https://github.com/sgornostal/gradle-docker-plugin/issues'
+        vcsUrl = 'https://github.com/sgornostal/gradle-docker-plugin.git'
+        licenses = ['Apache-2.0']
+        labels = ['gradle', 'docker', 'container', 'image']
+        githubRepo = 'sgornostal/gradle-docker-plugin'
+        version {
+            released  = new Date()
+        }
+    }
 }
 
 publishing {
@@ -35,27 +66,21 @@ publishing {
                 asNode().with {
 
                     appendNode('name', 'gradle-docker-plugin')
-                    appendNode('description', 'Gradle plugin to build Docker images')
-                    appendNode('url', 'https://github.com/Transmode/gradle-docker')
-                    appendNode('inceptionYear', '2013')
-
-                    appendNode('licenses').appendNode('license').with {
-                        appendNode('name', 'The Apache Software License, Version 2.0')
-                        appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
-                        appendNode('distribution', 'repo')
-                    }
+                    appendNode('description', 'Gradle plugin to build, run and push Docker images')
+                    appendNode('url', 'https://github.com/sgornostal/gradle-docker-plugin')
+                    appendNode('inceptionYear', '2017')
 
                     appendNode('developers').appendNode('developer').with {
-                        appendNode('id', 'mattgruter')
-                        appendNode('name', 'Matthias Grüter')
-                        appendNode('email', 'matthias.gruter@transmode.com')
+                        appendNode('id', 'sgornostal')
+                        appendNode('name', 'Slava Gornostal')
+                        appendNode('email', 'slava.gornostal@gmail.com')
                         appendNode('roles').appendNode('role', 'Developer')
 
                     }
 
                     appendNode('issueManagement').with {
                         appendNode('system', 'github')
-                        appendNode('url', 'https://github.com/Transmode/gradle-docker/issues')
+                        appendNode('url', 'https://github.com/sgornostal/gradle-docker-plugin/issues')
                     }
 
                 }
@@ -64,4 +89,7 @@ publishing {
     }
 }
 
+String resolveProperty(String projectPropKey) {
+    hasProperty(projectPropKey) ? getProperty(projectPropKey) : ''
+}
 

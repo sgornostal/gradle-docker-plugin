@@ -22,16 +22,34 @@ class DockerPluginTest {
     void setup() {
         project = ProjectBuilder.builder().build()
         project.apply plugin: 'docker'
-    }
-
-    /*@Test
-    void pluginAddExtension() {
-        assertTrue(project.docker instanceof PluginExtension)
-    }
-
-    @Test
-    void pluginAddRegistryExtension() {
-        assertTrue(project.docker.registry instanceof RegistryExtension)
+        project.docker {
+            imageName = 'Test'
+            dockerFile = 'Docker'
+            buildArgs = ['arg': 'value', 'arg2': 'value2']
+            tags = ['tag1', 'tag2']
+            run {
+                command = ['cm1', 'cm2']
+                volumes = ['/vol1:/vol1']
+                ports = ['20:20', '10:10']
+                env = ['env1', 'env2']
+                attach = false
+            }
+            clean {
+                force = false
+            }
+        }
+        project.dockerRegistries {
+            reg1 {
+                url = 'localhost:8181'
+                email = 'test@test'
+                username = 'test'
+                password = 'pwd'
+            }
+            reg2 {
+                username = 'test2'
+                password = 'pwd'
+            }
+        }
     }
 
     @Test
@@ -40,49 +58,116 @@ class DockerPluginTest {
     }
 
     @Test
-    void pluginCreatesBuildTask() {
-        Closure cl = {}
-        project.docker {
-            imageName = 'Test'
-            dockerFile = 'Docker'
-            buildArgs = ['arg': 'value']
-            tagsVersions = ['tag1', 'tag2']
-            res = cl
+    void pluginAddExtension() {
+        assertNotNull(project.extensions.findByName(DockerPlugin.EXTENSION_NAME))
+    }
+
+    @Test
+    void pluginResolvesDependenciesFromStringArgs() {
+        def task = project.task('myTask') {
         }
-        def task = project.tasks.findByName('buildDocker')
+        project.docker {
+            dependsOn 'myTask'
+        }
+        assertTrue(project.docker.dependencies.contains(task))
+    }
+
+    @Test
+    void pluginAddRunExtension() {
+        assertNotNull(project.docker.extensions.findByName(DockerPlugin.RUN_EXTENSION_NAME))
+    }
+
+    @Test
+    void pluginAddCleanExtension() {
+        assertNotNull(project.docker.extensions.findByName(DockerPlugin.CLEAN_EXTENSION_NAME))
+    }
+
+    @Test
+    void pluginAddRegistryExtension() {
+        assertNotNull(project.extensions.findByName(DockerPlugin.REGISTRY_EXTENSION_NAME))
+    }
+
+
+    @Test
+    void pluginCreatesPrepareTask() {
+        def task = project.tasks.findByName(DockerPlugin.PREPARE_TASK)
+
+        assertNotNull(task)
+        assertEquals(DockerPlugin.GROUP, task.group)
+    }
+
+    @Test
+    void pluginCreatesCleanTask() {
+        def task = project.tasks.findByName(DockerPlugin.CLEAN_TASK)
 
         assertNotNull(task)
         assertEquals(DockerPlugin.GROUP, task.group)
 
         assertEquals('Test', task.imageName)
-        assertEquals('Docker', task.dockerFile)
-        assertEquals(['arg': 'value'], task.buildArgs)
-        assertEquals(['tag1', 'tag2'], task.tagsVersions)
-        assertEquals(cl, task.res)
+        assertEquals(false, task.force)
     }
 
     @Test
-    void pluginCreatesPushTask() {
-        project.docker.registry {
-            url = 'someurl'
-            email = 'some@email'
-            username = 'some_username'
-            password = 'some_password'
-        }
-        def task = project.tasks.findByName('pushDocker')
+    void pluginCreatesBuildTask() {
+
+        def docker = project.extensions.findByName(DockerPlugin.EXTENSION_NAME)
+
+        def task = project.tasks.findByName(DockerPlugin.BUILD_TASK)
 
         assertNotNull(task)
         assertEquals(DockerPlugin.GROUP, task.group)
 
-        assertEquals('someurl', task.url)
-        assertEquals('some@email', task.email)
-        assertEquals('some_username', task.username)
-        assertEquals('some_password', task.password)
+        assertEquals(project.dockerBuildDir, task.buildDir)
+        assertEquals('Test', task.imageName)
+        assertEquals(docker.resolveDockerFile, task.dockerFile)
+        assertEquals(['arg': 'value', 'arg2': 'value2'], task.buildArgs)
+        assertEquals(['tag1', 'tag2'] as Set, task.tags)
     }
 
     @Test
     void pluginCreatesRunTask() {
 
-    }*/
+        def task = project.tasks.findByName(DockerPlugin.RUN_TASK)
+
+        assertNotNull(task)
+        assertEquals(DockerPlugin.GROUP, task.group)
+
+        assertEquals('Test', task.imageName)
+        assertEquals(DockerPlugin.RUN_STOP_PREFIX + 'Test', task.containerName)
+        assertEquals(['cm1', 'cm2'], task.command)
+        assertEquals(['/vol1:/vol1'] as Set, task.volumes)
+        assertEquals(['20:20', '10:10'] as Set, task.ports)
+        assertEquals(['env1', 'env2'], task.env)
+        assertEquals(false, task.attach)
+    }
+
+    @Test
+    void pluginCreatesStopTask() {
+
+        def task = project.tasks.findByName(DockerPlugin.STOP_TASK)
+
+        assertNotNull(task)
+        assertEquals(DockerPlugin.GROUP, task.group)
+
+        assertEquals('Test', task.imageName)
+        assertEquals(DockerPlugin.RUN_STOP_PREFIX + 'Test', task.containerName)
+    }
+
+    @Test
+    void pluginCreatesPushTasks() {
+
+        def task1 = project.tasks.findByName(String.format(DockerPlugin.PUSH_TASK, 'Reg1'))
+        def task2 = project.tasks.findByName(String.format(DockerPlugin.PUSH_TASK, 'Reg2'))
+
+        assertNotNull(task1)
+        assertNotNull(task2)
+
+        assertEquals('Test', task1.imageName)
+        assertEquals('localhost:8181', task1.url)
+        assertEquals('test@test', task1.email)
+        assertEquals('test', task1.username)
+        assertEquals('pwd', task1.password)
+
+    }
 
 }

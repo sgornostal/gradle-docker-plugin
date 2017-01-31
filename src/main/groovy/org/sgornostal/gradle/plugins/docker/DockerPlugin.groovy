@@ -1,6 +1,5 @@
 package org.sgornostal.gradle.plugins.docker
 
-import com.google.common.base.Preconditions
 import org.apache.commons.lang.StringUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -59,12 +58,10 @@ class DockerPlugin implements Plugin<Project> {
         }
 
         project.afterEvaluate {
-            def dockerfile = project.file(dockerExt.dockerFile)
-            Preconditions.checkArgument(dockerfile.exists(), "dockerfile '%s' does not exist.", dockerfile)
             prepare.with {
                 dependsOn dockerExt.dependencies
                 with dockerExt.copySpec
-                from dockerfile
+                from project.file(dockerExt.dockerFile)
                 into project.dockerBuildDir
             }
         }
