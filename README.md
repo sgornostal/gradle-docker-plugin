@@ -8,13 +8,11 @@ Plugin uses Docker remote API that are handled by [Docker Java library](https://
 
 ## Usage
 
-#### From bintray repository
+#### From jcenter repository
 ```gradle
 buildscript {
     repositories {
-       maven {
-           url  "http://dl.bintray.com/sgornostal/gradle-plugins-repo" 
-       }
+       jcenter()
     }
     dependencies {
         classpath 'org.sgornostal:gradle-docker-plugin:1.1'
