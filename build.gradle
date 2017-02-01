@@ -4,10 +4,14 @@ version '1.1'
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3',
+                'com.gradle.publish:plugin-publish-plugin:0.9.7'
     }
 }
 
@@ -15,6 +19,7 @@ buildscript {
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.gradle.plugin-publish'
 
 repositories {
     mavenLocal()
@@ -51,7 +56,20 @@ bintray {
         labels = ['gradle', 'docker', 'container', 'image']
         githubRepo = 'sgornostal/gradle-docker-plugin'
         version {
-            released  = new Date()
+            released = new Date()
+        }
+    }
+}
+
+pluginBundle {
+    plugins {
+        website = 'https://github.com/sgornostal/gradle-docker-plugin'
+        vcsUrl = 'https://github.com/sgornostal/gradle-docker-plugin.git'
+        description = 'Gradle plugin for managing Docker images and containers'
+        tags = ['gradle', 'docker', 'container', 'image']
+        dockerPlugin {
+            id = 'org.sgornostal.docker'
+            displayName = 'Docker Plugin'
         }
     }
 }

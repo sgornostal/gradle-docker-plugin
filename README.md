@@ -7,9 +7,9 @@ Plugin uses Docker remote API that are handled by [Docker Java library](https://
 [![Build Status](https://travis-ci.org/sgornostal/gradle-docker-plugin.svg?branch=master)](https://travis-ci.org/sgornostal/gradle-docker-plugin)
 
 ## Usage
-### Apply plugin
+
+#### From bintray repository
 ```gradle
-...
 buildscript {
     repositories {
        maven {
@@ -20,11 +20,33 @@ buildscript {
         classpath 'org.sgornostal:gradle-docker-plugin:1.1'
     }
 }
-
-apply plugin: 'docker'
-
-...
 ```
+#### From gradle plugins repository
+```gradle
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.org.sgornostal:gradle-docker-plugin:1.1"
+  }
+}
+```
+
+### Apply plugin
+
+```gradle
+apply plugin: 'org.sgornostal.docker'
+```
+
+or
+
+```gradle
+apply plugin: 'docker'
+```
+
 
 ### Configure plugin through plugin extension properties
 Configuration properties in the plugin extension `docker` and `dockerRegistries` are applied to all Docker tasks.
@@ -33,15 +55,13 @@ Configuration properties in the plugin extension `docker` and `dockerRegistries`
 
 Example:
 ```gradle
-...
 docker {
     imageName = 'my-awesome-image'
     buildArgs = ['ARG_NAME': 'ARG_VALUE']
     tags 'latest', project.version
     files jar.archivePath
-    dependsOn build   
+    dependsOn build     
 }
-...
 ```
 
 Available properties are:
@@ -59,9 +79,7 @@ Available properties are:
 
 Example:
 ```gradle
-...
 docker {
-    ...
     run {
         command 'ping', 'google.com'
         volumes '/foo:/foo', '/bar:/bar'
@@ -70,7 +88,6 @@ docker {
     }
     ...
 }
-...
 ```
 
 Available properties are:
@@ -88,15 +105,12 @@ Available properties are:
 
 Example:
 ```gradle
-...
 docker {
-    ...
     clean {
         force = true                                   
-    }
+    }   
     ...
 }
-...
 ```
 
 Available properties are:
@@ -106,9 +120,7 @@ Available properties are:
 
 Example:
 ```gradle
-...
 dockerRegistries {
-    ...
     myRegistry {
         url = 'localhost:18067'
         email = 'email@email.com'
@@ -122,7 +134,6 @@ dockerRegistries {
     }
     ...
 }
-...
 ```
 
 Available properties are:
