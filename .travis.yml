@@ -1,21 +1,27 @@
 language: groovy
 jdk:
-  - oraclejdk8
+- oraclejdk8
 script:
-- if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ -z "$TRAVIS_TAG" ]; then bash ./gradlew clean test; fi
-- if [ ! -z "$TRAVIS_TAG" ]; then bash ./gradlew clean test bintrayUpload publishPlugins -Pversion=$TRAVIS_TAG -PbintrayUser=$bintrayUser -PbintrayKey=$bintrayKey -Pgradle.publish.key=$publishKey -Pgradle.publish.secret=$publishSecret; fi
+- if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ -z "$TRAVIS_TAG" ]; then bash ./gradlew
+  clean test; fi
+- if [ ! -z "$TRAVIS_TAG" ]; then bash ./gradlew clean test bintrayUpload publishPlugins
+  -Pversion=$TRAVIS_TAG -PbintrayUser=$bintrayUser -PbintrayKey=$bintrayKey -Pgradle.publish.key=$publishKey
+  -Pgradle.publish.secret=$publishSecret; fi
 branches:
   only:
-   - master
-   - dev
-   - "/^\\d+.\\d+./"
+  - master
+  - dev
+  - "/^\\d+.\\d+./"
 deploy:
   provider: releases
+  api_key:
+    secure: nhzqqOwdD0laIGRHLM0VExBzYuNHdqtuYBNx8C0AxXO7p1HD/zUM36izWAGy68CkiJsTm93zLVmL2upqTjcVqIZj0swxrmESzulqnAgbe0RafaKdJfPGtNjqsWdOu/JtME76cUTWxU9LXEInEtsU38BNarszdKVEbavXx4KnFwGY/iR2LQ9u3W5+dNmpi+PY+AfcFYm+TMrtpcxAXca7jcfcSPMwTVK9JBcCfxAGGf3AhgT6UYYLH8oI9/z8iSIajJSiAbGqCQ4FmUhyUe/e0l+5Tdur3i5mh1xhFtX2tiK0n6FNCFKR1WqBSEMnvlryOQJqQIRg1Bef8hTtQhLRQbVFTZ2brfatlD0jK4qs2hdjMROmLJ1SLrP4XN2H9+N2A1C3xc2pNrgRa3xiZL+K5BmBexbk9qmPwd1iWSToNjPGTh5FKLhIZ07o5fOJLQBB3gVtppmljKfpLJ7NKsnDRrsI0BbzeLsI2lJn976DUhJL0UqPUtX1dxunhaw+fuwG/bo+Dh3jeZVehrxRvSNkMGpFeMDdwqp4IG30qxyUlci9YCn9JGW8DcPLiBeGo/GpaHCeX6KTe3xESU5VO1BdmihYMajvrwapyRZdmmL/5YJpivvxlNEfpWt2BPKlsaJZwF0jQSgLVOXU2RvgS9bZDPnUR7tQDzY67eP5feUVvx8=
   file:
    - build/libs/gradle-docker-plugin-$TRAVIS_TAG.jar
    - build/libs/gradle-docker-plugin-$TRAVIS_TAG-groovydoc.jar
    - build/libs/gradle-docker-plugin-$TRAVIS_TAG-javadoc.jar
    - build/libs/gradle-docker-plugin-$TRAVIS_TAG-sources.jar
   on:
+    repo: sgornostal/gradle-docker-plugin
     tags: true
     overwrite: true
