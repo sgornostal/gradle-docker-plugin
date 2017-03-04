@@ -1,8 +1,21 @@
 language: groovy
 jdk:
   - oraclejdk8
-before_install:
- - chmod +x gradlew
 script:
- - ./gradlew clean bintrayUpload -PbintrayUser=$bintrayUser -PbintrayKey=$bintrayKey
- - ./gradlew clean publishPlugins -Pgradle.publish.key=$publishKey -Pgradle.publish.secret=$publishSecret
+- if [ "$TRAVIS_PULL_REQUEST" != "false" ] || [ -z "$TRAVIS_TAG" ]; then bash ./gradlew clean test; fi
+- if [ ! -z "$TRAVIS_TAG" ]; then bash ./gradlew clean test bintrayUpload publishPlugins -Pversion=$TRAVIS_TAG -PbintrayUser=$bintrayUser -PbintrayKey=$bintrayKey -Pgradle.publish.key=$publishKey -Pgradle.publish.secret=$publishSecret; fi
+branches:
+  only:
+   - master
+   - dev
+   - "/^\\d+.\\d+./"
+deploy:
+  provider: releases
+  file:
+   - build/libs/gradle-docker-plugin-$TRAVIS_TAG.jar
+   - build/libs/gradle-docker-plugin-$TRAVIS_TAG-groovydoc.jar
+   - build/libs/gradle-docker-plugin-$TRAVIS_TAG-javadoc.jar
+   - build/libs/gradle-docker-plugin-$TRAVIS_TAG-sources.jar
+  on:
+    tags: true
+    overwrite: true

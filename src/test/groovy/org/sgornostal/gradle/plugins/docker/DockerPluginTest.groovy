@@ -119,7 +119,7 @@ class DockerPluginTest {
 
         assertEquals(project.dockerBuildDir, task.buildDir)
         assertEquals('Test', task.imageName)
-        assertEquals(docker.resolveDockerFile, task.dockerFile)
+        assertEquals(docker.resolveDockerFileName, task.dockerFileName)
         assertEquals(['arg': 'value', 'arg2': 'value2'], task.buildArgs)
         assertEquals(['tag1', 'tag2'] as Set, task.tags)
     }

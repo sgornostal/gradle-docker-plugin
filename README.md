@@ -15,7 +15,7 @@ buildscript {
        jcenter()
     }
     dependencies {
-        classpath 'org.sgornostal:gradle-docker-plugin:1.1'
+        classpath 'org.sgornostal:gradle-docker-plugin:<version>'
     }
 }
 ```
@@ -28,7 +28,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "gradle.plugin.org.sgornostal:gradle-docker-plugin:1.1"
+    classpath "gradle.plugin.org.sgornostal:gradle-docker-plugin:<version>"
   }
 }
 ```
