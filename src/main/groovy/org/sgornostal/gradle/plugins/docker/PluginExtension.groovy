@@ -51,8 +51,8 @@ class PluginExtension {
         imageName ?: project.name
     }
 
-    File getResolveDockerFile() {
-        new File(project.dockerBuildDir as File, dockerFile)
+    String getResolveDockerFileName() {
+        new File(dockerFile).name
     }
 
 }

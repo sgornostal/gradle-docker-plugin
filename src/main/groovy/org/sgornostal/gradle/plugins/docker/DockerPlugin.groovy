@@ -82,7 +82,7 @@ class DockerPlugin implements Plugin<Project> {
             conventionMapping.with {
                 buildDir = { project.dockerBuildDir }
                 imageName = { dockerExt.resolveImageName }
-                dockerFile = { dockerExt.resolveDockerFile }
+                dockerFileName = { dockerExt.resolveDockerFileName }
                 buildArgs = { dockerExt.buildArgs }
                 tags = { dockerExt.tags }
             }

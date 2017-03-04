@@ -3,3 +3,6 @@ jdk:
   - oraclejdk8
 before_install:
  - chmod +x gradlew
+script:
+ - gradlew clean bintrayUpload -PbintrayUser=$bintrayUser -PbintrayKey=$bintrayKey
+ - gradlew clean publishPlugins -Pgradle.publish.key=$publishKey -Pgradle.publish.secret=$publishSecret

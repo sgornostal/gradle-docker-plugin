@@ -15,8 +15,9 @@ class BuildDockerImage extends AbstractDockerTask {
 
     @InputDirectory
     File buildDir
-    @InputFile
-    File dockerFile
+    @Input
+    @Optional
+    String dockerFileName
     @Input
     @Optional
     Map<String, String> buildArgs
@@ -34,7 +35,7 @@ class BuildDockerImage extends AbstractDockerTask {
                 .exec()
 
         def build = client.buildImageCmd(getBuildDir())
-                .withDockerfile(getDockerFile())
+                .withDockerfile(new File(getBuildDir(), getDockerFileName() ?: 'Dockerfile'))
                 .withTag(image + ":" + tag)
 
         if (getBuildArgs()) {
