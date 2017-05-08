@@ -69,9 +69,13 @@ class BuildDockerImage extends AbstractDockerTask {
         if (existingImages) {
             existingImages.findAll { !it.id.replace('sha256:', '').startsWith(imageId) }.each {
                 logger.info('Removing old image {}', it.id)
-                client.removeImageCmd(it.id)
-                        .withForce(true)
-                        .exec()
+                try {
+                    client.removeImageCmd(it.id)
+                            .withForce(true)
+                            .exec()
+                } catch (Throwable th) {
+                    logger.warn('Could not delete old image {}, error: {}', it.id, th.message)
+                }
             }
         }
 

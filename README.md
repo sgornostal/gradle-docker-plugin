@@ -63,7 +63,7 @@ docker {
 ```
 
 Available properties are:
-- `host` - the server URL to connect to via Docker’s remote API. (`string`, optional, default: `tcp://localhost:2375`)
+- `host` - the server URL to connect to via Docker’s remote API. (`string`, optional, default: windows - `tcp://localhost:2375`, unix - `unix:///var/run/docker.sock`)
 - `tlsVerify` - verify TLS (`boolean`, optional, default: `false`)
 - `certPath` - the path to certificates for communicating with Docker over SSL (`string`, optional)
 - `imageName` - docker image name (`string`, optional, default: `${project.name}`)
