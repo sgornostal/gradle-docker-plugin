@@ -13,8 +13,6 @@ import org.sgornostal.gradle.plugins.docker.PluginExtension
  */
 abstract class AbstractDockerTask extends DefaultTask {
 
-    public static final String LOCAL_HOST = 'tcp://localhost:2375'
-
     @Input
     String imageName
 
@@ -36,11 +34,19 @@ abstract class AbstractDockerTask extends DefaultTask {
         getImage() + ":" + getTag()
     }
 
+    private static String getDefaultHost() {
+        if (System.properties['os.name'].toLowerCase().contains('windows')) {
+            return 'tcp://localhost:2375'
+        } else {
+            return 'unix:///var/run/docker.sock'
+        }
+    }
+
     @TaskAction
     void executeTask() {
 
         def configBuilder = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost(docker.host ?: LOCAL_HOST)
+                .withDockerHost(docker.host ?: getDefaultHost())
 
         if (docker.tlsVerify) {
             configBuilder.withDockerTlsVerify(docker.tlsVerify as Boolean)
