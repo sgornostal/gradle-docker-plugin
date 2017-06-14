@@ -28,7 +28,7 @@ dependencies {
     compile gradleApi()
     compile localGroovy()
     compile 'com.google.guava:guava:21.0'
-    compile 'com.github.docker-java:docker-java:3.0.7'
+    compile 'com.github.docker-java:docker-java:3.0.10'
 
     testCompile 'junit:junit:4.12'
 }
