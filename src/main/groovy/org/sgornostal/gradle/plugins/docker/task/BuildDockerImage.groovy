@@ -34,9 +34,10 @@ class BuildDockerImage extends AbstractDockerTask {
                 .withImageNameFilter(image)
                 .exec()
 
-        def build = client.buildImageCmd(getBuildDir())
-                .withDockerfile(new File(getBuildDir(), getDockerFileName() ?: 'Dockerfile'))
-                .withTag(image + ":" + tag)
+        def dockerFile = new File(getBuildDir(), getDockerFileName() ?: 'Dockerfile')
+
+        def build = client.buildImageCmd(dockerFile)
+                .withTags([image + ":" + tag] as Set)
 
         if (getBuildArgs()) {
             getBuildArgs().each {
